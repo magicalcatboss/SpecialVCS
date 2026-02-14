@@ -24,24 +24,24 @@ export default defineConfig({
     // Proxy ALL backend traffic through Vite (same origin = no SSL issues)
     proxy: {
       '/ws': {
-        target: 'http://127.0.0.1:8000',
+        target: process.env.BACKEND_URL || 'http://127.0.0.1:8000',
         ws: true,
         changeOrigin: true,
       },
       '/spatial': {
-        target: 'http://127.0.0.1:8000',
+        target: process.env.BACKEND_URL || 'http://127.0.0.1:8000',
         changeOrigin: true,
       },
       '/vision': {
-        target: 'http://127.0.0.1:8000',
+        target: process.env.BACKEND_URL || 'http://127.0.0.1:8000',
         changeOrigin: true,
       },
       '/audio': {
-        target: 'http://127.0.0.1:8000',
+        target: process.env.BACKEND_URL || 'http://127.0.0.1:8000',
         changeOrigin: true,
       },
       '/agent': {
-        target: 'http://127.0.0.1:8000',
+        target: process.env.BACKEND_URL || 'http://127.0.0.1:8000',
         changeOrigin: true,
       },
     },

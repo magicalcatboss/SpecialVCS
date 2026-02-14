@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: spatialvcs-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+      - ./.env:/app/.env
+      - ./key.pem:/app/key.pem
+      - ./cert.pem:/app/cert.pem
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: spatialvcs-frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      # Mount source code for hot reload (optional, but good for dev)
+      - ./frontend/src:/app/src
+      - ./key.pem:/app/key.pem
+      - ./cert.pem:/app/cert.pem
+    environment:
+      - BACKEND_URL=http://backend:8000
+    depends_on:
+      - backend
+    restart: unless-stopped
