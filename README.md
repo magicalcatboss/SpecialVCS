@@ -2,7 +2,15 @@
 
 A spatial video control system that uses a mobile phone as a smart probe to scan the environment, detect objects (YOLO), understand them (Gemini), and map them into a semantic searchable memory.
 
-## 🚀 Quick Start for Teammates
+## 🚀 Quick Start for Teammates (One-Click)
+
+### Option A: One-Click Script (Recommended)
+We have prepared `.command` scripts to automate everything.
+1.  Double-click `setup_env.command` to install Python/Node dependencies and generate SSL certs.
+2.  Double-click `start_app.command` to launch both backend and frontend.
+
+### Option B: Manual Setup
+If the scripts don't work, follow these steps:
 
 ### Prerequisites
 - **Node.js** (v18+)
