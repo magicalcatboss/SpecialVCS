@@ -98,6 +98,21 @@ export default function ProbeView() {
         return () => clearInterval(intervalRef.current);
     }, [isScanning, captureAndSend]);
 
+    const toggleScan = () => {
+        if (isScanning) {
+            setIsScanning(false);
+            if (readyState === ReadyState.OPEN) {
+                sendMessage(JSON.stringify({
+                    type: 'stop_scan',
+                    scan_id: scanId
+                }));
+                addLog('🛑 Stop signal sent');
+            }
+        } else {
+            setIsScanning(true);
+        }
+    };
+
     const connectionColor = readyState === ReadyState.OPEN ? 'bg-green-500' : 'bg-red-500';
     const connectionText = readyState === ReadyState.OPEN ? 'CONNECTED' : 'DISCONNECTED';
 
@@ -177,7 +192,7 @@ export default function ProbeView() {
                         {/* Start Button */}
                         <div className="mt-2 mb-2">
                             <button
-                                onClick={() => setIsScanning(!isScanning)}
+                                onClick={toggleScan}
                                 className={`group w-full relative overflow-hidden border rounded-lg py-5 shadow-[0_0_20px_rgba(0,240,255,0.15)] active:scale-[0.98] transition-all
                                     ${isScanning ? 'bg-red-900/20 border-red-500/50' : 'bg-surface-dark border-primary/30'}`}
                             >

@@ -98,6 +98,18 @@ async def websocket_probe(websocket: WebSocket, client_id: str, api_key: Optiona
             data = await websocket.receive_json()
             # Expected: {"type":"frame", "image":"base64...", "pose":{"alpha":0,"beta":0,"gamma":0}, "scan_id":"room_01"}
 
+            if data.get("type") == "stop_scan":
+                scan_id = data.get("scan_id", f"scan_{client_id}")
+                if scan_id in spatial_scans:
+                    spatial_scans[scan_id]["status"] = "completed"
+                # Notify dashboards
+                await socket_manager.broadcast_to_dashboards({
+                    "type": "scan_completed",
+                    "scan_id": scan_id,
+                    "log": f"Scan {scan_id} completed."
+                })
+                continue
+
             if data.get("type") == "frame":
                 scan_id = data.get("scan_id", f"scan_{client_id}")
                 timestamp = data.get("timestamp", time.time())
@@ -232,13 +244,16 @@ if os.path.exists("demo"):
 
 @app.get("/")
 def health_check():
+    from services.video_processor import _get_yolo
     return {
         "status": "online", 
         "name": "SpatialVCS", 
         "version": "2.1.0", 
-        "docs": "/docs",
-        "project_spec": "/project_specification.md",
-        "backend_caps": "/backend_capabilities.md"
+        "capabilities": {
+            "search": spatial_memory.is_ready(),
+            "yolo": _get_yolo() is not None,
+            "gemini": os.getenv("GEMINI_API_KEY") is not None
+        }
     }
 
 
@@ -394,13 +409,7 @@ async def receive_frame(
 @app.post("/spatial/query")
 async def spatial_query(request: SpatialQueryRequest, x_api_key: Optional[str] = Header(None)):
     client = get_gemini_client(x_api_key)
-    raw_results = spatial_memory.search(request.query, max(request.top_k, 10))
-    if request.scan_id:
-        raw_results = [
-            r for r in raw_results
-            if r.get("metadata", {}).get("scan_id") == request.scan_id
-        ]
-    results = raw_results[:request.top_k]
+    results = spatial_memory.search(request.query, request.top_k, scan_id=request.scan_id)
     answer = client.answer_spatial_query(request.query, results)
     
     formatted_results = []

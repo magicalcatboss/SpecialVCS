@@ -68,7 +68,7 @@ class SpatialMemory:
         self.index.add(embedding)
         self.metadata.append({"text": text, **meta})
         
-    def search(self, query: str, k: int = 3):
+    def search(self, query: str, k: int = 3, scan_id: str = None):
         self._ensure_init()
         encoder = _get_encoder()
         faiss = _get_faiss()
@@ -79,17 +79,26 @@ class SpatialMemory:
         query_vec = encoder.encode([query])
         faiss.normalize_L2(query_vec)
         
-        distances, indices = self.index.search(query_vec, k)
+        # Robust filtering: search more, then filter
+        search_k = k * 10 if scan_id else k
+        distances, indices = self.index.search(query_vec, search_k)
         
         results = []
         for i, idx in enumerate(indices[0]):
             if idx != -1 and idx < len(self.metadata):
                 item = self.metadata[idx]
+                
+                # Filter by scan_id if requested
+                if scan_id and item.get("scan_id") != scan_id:
+                    continue
+                    
                 results.append({
                     "score": float(distances[0][i]),
                     "description": item["text"],
                     "metadata": item
                 })
+                if len(results) >= k:
+                    break
         return results
 
     def save(self):
@@ -100,3 +109,7 @@ class SpatialMemory:
         faiss.write_index(self.index, self.index_path)
         with open(self.index_path.replace(".faiss", ".json"), "w") as f:
             json.dump(self.metadata, f)
+
+    def is_ready(self) -> bool:
+        self._ensure_init()
+        return (_get_encoder() is not None) and (_get_faiss() is not None) and (self.index is not None)

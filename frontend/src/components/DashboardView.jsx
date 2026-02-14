@@ -76,10 +76,20 @@ export default function DashboardView() {
                     ...(activeScanId ? { scan_id: activeScanId } : {})
                 })
             });
+
+            if (!res.ok) {
+                const errText = await res.text();
+                console.error("Search failed:", res.status, errText);
+                alert(`Search failed: ${res.status} ${res.statusText}`); // Simple feedback
+                setSearchResults([]);
+                return;
+            }
+
             const data = await res.json();
             setSearchResults(data.results || []);
         } catch (err) {
-            console.error(err);
+            console.error("Search Exception:", err);
+            alert("Search error (see console)");
             setSearchResults([]);
         }
     };
