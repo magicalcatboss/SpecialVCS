@@ -86,3 +86,8 @@ npm run dev -- --host
 - **White Screen on Mobile?** Check console (remote debug). Ensure SSL certs are valid.
 - **Search fails?** Ensure you entered the API Key in Settings ("CFG" button).
 - **Backend 422 Error?** Fixed in latest version (scan_id is optional).
+
+## Team Members
+- **Hanson He** ([GitHub](https://github.com/HansonHe-UW), [LinkedIn](https://linkedin.com/in/shengyuan-he))
+- **Yingxuan Wang** ([GitHub](https://github.com/magicalcatboss), [LinkedIn](https://www.linkedin.com/in/yingxuan-wang-uw))
+- **Molly Xie** ([GitHub](https://github.com/molly-xie-uw), [LinkedIn](https://linkedin.com/in/molly-xie-uw))
