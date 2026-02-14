@@ -1,11 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import useWebSocket, { ReadyState } from 'react-use-websocket';
 import { Search, Database, Box, Play, Wifi, Cpu, Activity, Clock, Settings, RefreshCw, Trash2 } from 'lucide-react';
+import SpatialView3D from './SpatialView3D';
 
 export default function DashboardView() {
     const [query, setQuery] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const [liveDetections, setLiveDetections] = useState([]);
+    const [spatialSnapshot, setSpatialSnapshot] = useState([]);
+    const [show3D, setShow3D] = useState(false);
     const [stats, setStats] = useState({ frames: 0, objects: 0, fps: 0 });
     const [apiKey, setApiKey] = useState(localStorage.getItem('gemini_api_key') || '');
     const [showSettings, setShowSettings] = useState(false);
@@ -189,6 +192,15 @@ export default function DashboardView() {
             }
         }
     }, [lastMessage, isLiveDiff, referenceObjects, diffThreshold]);
+
+    // 3D snapshot refresh every 3 seconds (non-realtime for stability)
+    useEffect(() => {
+        if (!show3D) return;
+        const interval = setInterval(() => {
+            setSpatialSnapshot([...liveDetections]);
+        }, 3000);
+        return () => clearInterval(interval);
+    }, [show3D, liveDetections]);
 
     const fetchScans = async () => {
         try {
@@ -491,7 +503,20 @@ export default function DashboardView() {
                 <div className="col-span-8 flex flex-col space-y-4">
                     <div className="flex justify-between items-center">
                         <h2 className="text-sm font-mono text-primary/80 flex items-center"><Wifi className="w-4 h-4 mr-2" /> LIVE INTERCEPT</h2>
+                        <button
+                            onClick={() => { setShow3D(!show3D); if (!show3D) setSpatialSnapshot([...liveDetections]); }}
+                            className={`px-3 py-1 rounded text-xs font-mono font-bold border transition-colors ${show3D ? 'bg-primary/20 text-primary border-primary/50' : 'bg-slate-800 text-slate-400 border-slate-700 hover:text-white'}`}
+                        >
+                            {show3D ? '⬛ HIDE 3D' : '🧊 SHOW 3D'}
+                        </button>
                     </div>
+
+                    {/* 3D Spatial View */}
+                    {show3D && (
+                        <div className="h-72 w-full">
+                            <SpatialView3D objects={spatialSnapshot} />
+                        </div>
+                    )}
 
                     <div className="flex-1 grid grid-cols-3 gap-4 overflow-y-auto pr-2 content-start">
                         {liveDetections.map((obj, idx) => (

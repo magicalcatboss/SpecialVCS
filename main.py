@@ -153,6 +153,8 @@ def _record_detections(scan_record: dict, detections: list, timestamp: float):
     for det in detections:
         scan_record["detections"].append({
             "label": det.get("label", ""),
+            "yolo_label": det.get("yolo_label", det.get("label", "")),
+            "gemini_name": det.get("gemini_name", ""),
             "confidence": float(det.get("confidence", 0.0)),
             "position_3d": det.get("position_3d", {}),
             "timestamp": timestamp,
@@ -174,7 +176,7 @@ def _euclidean_distance(a: dict, b: dict) -> float:
 def _latest_position_by_label(detections: list) -> Dict[str, dict]:
     latest = {}
     for item in detections:
-        label = item.get("label")
+        label = item.get("yolo_label") or item.get("label")
         position = item.get("position_3d")
         if not label or not isinstance(position, dict):
             continue
