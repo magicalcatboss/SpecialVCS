@@ -1,15 +1,18 @@
-# SpatialVCS (Physical Spatial Version Control System)
+# SpatialVCS (CTRL+HACK+DEL 2.0)
 
 > **Empowering the Unseen: Mapping Physical Reality into Searchable Memory.**
 
 [![GitHub](https://img.shields.io/badge/GitHub-SpatialVCS-blue?logo=github)](https://github.com/magicalcatboss/SpatialVCS)
 [![Status](https://img.shields.io/badge/Status-Active-success)](#)
+[![Competition](https://img.shields.io/badge/Competition-CTRL+HACK+DEL_2.0-red)](https://github.com/JSZ-Research/DonaTrust?tab=readme-ov-file)
 
 ## 🌟 Our Mission
 
 In a world defined by three-dimensional space, navigating and tracking objects can be a significant challenge, especially for individuals with visual impairments. **SpatialVCS** is designed to rewrite this narrative by creating a bridge between physical reality and digital intelligence.
 
 By leveraging advanced spatial mapping and AI-powered computer vision (YOLO and Gemini), we transform your mobile phone into a "smart probe." Our mission is to empower users to seamlessly track, search, and understand their surroundings, ensuring that no object is ever "lost" and every space is intuitively accessible.
+
+This project is a submission for the **CTRL+HACK+DEL 2.0** competition.
 
 ## Why "SpatialVCS"?
 
