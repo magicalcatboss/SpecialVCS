@@ -4,7 +4,7 @@
 
 [![GitHub](https://img.shields.io/badge/GitHub-SpatialVCS-blue?logo=github)](https://github.com/magicalcatboss/SpatialVCS)
 [![Status](https://img.shields.io/badge/Status-Active-success)](#)
-[![Competition](https://img.shields.io/badge/Competition-CTRL+HACK+DEL_2.0-red)](https://github.com/JSZ-Research/DonaTrust?tab=readme-ov-file)
+[![Competition](https://img.shields.io/badge/Competition-CTRL+HACK+DEL_2.0-red)](#)
 
 ## 🌟 Our Mission
 
@@ -42,7 +42,7 @@ If the scripts don't work, follow these steps:
 ### Prerequisites
 - **Node.js** (v18+)
 - **Python** (3.10+)
-- **mkcert** (For SSL certificates)
+- **mkcert** (For SSL certificates - Required for mobile camera access)
   - macOS: `brew install mkcert nss`
   - Windows: `choco install mkcert`
 
@@ -75,10 +75,10 @@ Run this in the root directory:
 mkcert -install
 
 # Generate certs for localhost and your local IP (e.g., 100.x.y.z or 192.168.x.y)
-# REPLACE 100.104.16.42 WITH YOUR ACTUAL LAN IP!
+# IMPORTANT: Replace 100.104.16.42 with YOUR actual LAN IP!
 mkcert -key-file key.pem -cert-file cert.pem localhost 127.0.0.1 ::1 100.104.16.42
 ```
-*Note: If you don't have `mkcert`, the frontend will fallback to HTTP, but mobile camera might not work unless you use localhost.*
+*Note: The frontend must act as HTTPS server for the mobile camera to work. If you skip this, mobile access will fail.*
 
 ### 4. Run the System
 You need two terminal windows.
@@ -110,9 +110,19 @@ npm run dev -- --host
 - `frontend/src/components/`: React views (`ProbeView.jsx`, `DashboardView.jsx`).
 
 ## Troubleshooting
-- **White Screen on Mobile?** Check console (remote debug). Ensure SSL certs are valid.
+- **White Screen on Mobile?**
+  - Check the console (remote debug).
+  - Ensure SSL certs are valid and generated for your specific LAN IP.
+  - Verify your phone is on the same Wi-Fi network as your computer.
+  - Try accessing `https://<YOUR-IP>:5173/probe` directly.
 - **Search fails?** Ensure you entered the API Key in Settings ("CFG" button).
 - **Backend 422 Error?** Fixed in latest version (scan_id is optional).
+
+## Screenshots
+*(Add screenshots here)*
+
+## License
+Distributed under the MIT License. See `LICENSE` for more information.
 
 ## Team Members
 
